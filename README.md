@@ -7,10 +7,10 @@ I built this as hands-on preparation for the AWS Certified Security - Specialty 
 ## Contents
 
 - [Architecture](#architecture)
-- [What's covered](#whats-covered)
+- [What I built](#what-i-built)
 - [The build, day by day](#the-build-day-by-day)
 - [What I actually learned](#what-i-actually-learned)
-- [Known limitation](#known-limitation)
+- [Limitation](#limitation)
 - [Repository structure](#repository-structure)
 
 ## Architecture
@@ -38,7 +38,7 @@ graph TD
 
 Every account below management inherits its boundaries from Control Tower and Service Control Policies the moment it lands in its OU. Nothing is configured account by account by hand.
 
-## What's covered
+## What I built
 
 | Service | What it does here |
 |---|---|
@@ -178,7 +178,7 @@ Almost nothing worked on the first try. The debugging, reading system logs, trac
 
 A policy I wrote on Day 1 was still actively enforcing itself weeks later, and it even blocked my own attempt to tear the whole project down at the end. Control Tower couldn't delete its own Config recorder because my own policy explicitly denied it, weeks after I'd forgotten I wrote it that way.
 
-## limitation
+## Limitation
 
 Service Catalog's cross-account launch role has a real AWS architectural constraint that I didn't fully resolve here. The launch constraint role has to exist in the same account as the portfolio, which doesn't work cleanly when a different account is doing the launching. The standard real-world fix, deploying the role into every consuming account through CloudFormation StackSets, is something I understood and documented but didn't implement in this project.
 
