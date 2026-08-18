@@ -1,6 +1,6 @@
 # Favstar Financial - Governed AWS Landing Zone
 
-Favstar Financial is a fictional fintech company running on one AWS account with no real governance in place, and they're trying to pass an enterprise client's security audit. This project rebuilds their environment from scratch: a governed multi-account AWS Organization, enforced boundaries, continuous compliance monitoring, and everything deployed as code.
+Favstar Financial is a fictional fintech company running on one AWS account with no real governance in place, and they're trying to pass an enterprise client's security audit. This project rebuilds their environment from scratch: a governed multi-account AWS Organization, enforced boundaries, continuous compliance monitoring, and the infrastructure layer built with CloudFormation.
 
 I built this as hands-on preparation for the AWS Certified Security - Specialty exam.
 
@@ -66,7 +66,6 @@ I created the org, 4 OUs, 6 accounts, and 5 SCPs. Then I actually tested them fr
 
 <img src="evidence/phase1-organizations/OU tree (1).png" width="600" alt="OU tree, early version">
 
-**OU tree, after every account landed in its OU:**
 
 <img src="evidence/phase1-organizations/OU tree (2).png" width="600" alt="OU tree, complete version">
 
@@ -74,11 +73,11 @@ I created the org, 4 OUs, 6 accounts, and 5 SCPs. Then I actually tested them fr
 
 <img src="evidence/phase2-scps/SCP denial messages (1).png" width="600" alt="SCP denial message">
 
-I also hit an AWS account quota limit that blocked Prod and Sandbox from being created right away:
+I also hit an AWS account quota limit that blocked Prod and Sandbox from being created initially:
 
 <img src="evidence/phase1-organizations/Service quota limit.png" width="600" alt="Service quota limit notice">
 
-Then I moved on to Control Tower. It applies its own mandatory controls automatically the moment an OU is registered, on top of whatever elective controls you pick yourself. Comparing the two side by side was actually the interesting part: my SCPs govern what workload accounts are allowed to do. Control Tower's controls protect its own infrastructure from being tampered with, even by an account admin.
+Then I moved on to Control Tower. I discovered it applies its own mandatory controls automatically when an OU is registered, on top of whatever elective controls you must have picked. Comparing the two side by side was actually interesting: my SCPs govern what workload accounts are allowed to do. Control Tower's controls protect its own infrastructure from being tampered with, even by an account admin.
 
 **Control Tower's controls list, showing the mix of mandatory and elective:**
 
@@ -102,7 +101,7 @@ To prove it actually worked, I opened a security group to allow SSH from anywher
 
 ### Day 4: Service Catalog and Resource Access Manager
 
-**Service Catalog:** I built a compliant S3 bucket template, packaged it as a product in a portfolio, and shared that portfolio with the Workloads OU. Then I created a restricted test user in Dev with only Service Catalog permissions. The user could see the approved product and try to launch it, but the launch itself kept failing for a real reason: the account trying to build the resource didn't match the account the launch role belonged to. This turned out to be a documented AWS limitation for portfolios shared across accounts through Organizations. The actual goal, proving a restricted user can only touch pre-approved infrastructure, was still fully proven even though the final provisioning step didn't complete.
+**Service Catalog:** I built a compliant S3 bucket template, packaged it as a product in a portfolio, and shared that portfolio with the Workloads OU. Then I created a restricted test user in Dev with only Service Catalog permissions. The user could see the approved product and try to launch it, but the launch itself kept failing for this reason: the account trying to build the resource didn't match the account the launch role belonged to. This turned out to be a documented AWS limitation for portfolios shared across accounts through Organizations. The actual goal, proving a restricted user can only touch pre-approved infrastructure, was still fully proven even though the final provisioning step didn't complete.
 
 **The launch error:**
 
@@ -142,7 +141,7 @@ I built a WaitCondition test: a server that only reports back "done" once its se
 2. The cfn-signal command's syntax was wrong
 3. Even with correct syntax, the signal still needed to reach a specific Amazon S3 address, and the network had no path there either
 
-Rather than attach a paid NAT Gateway, I added a free S3 Gateway VPC Endpoint instead. That fixed it. The signal was received in about 15 seconds on the next attempt.
+Rather than attach a paid NAT Gateway, I added a free S3 Gateway VPC Endpoint instead. That fixed it. The signal was received in seconds on the next attempt.
 
 **The successful run, start to finish:**
 
@@ -168,19 +167,18 @@ I also practiced change sets: creating one, reviewing exactly what it would chan
 
 <img src="evidence/phase8-cloudformation/Change set.png" width="600" alt="Reviewed change set">
 
-The last piece was a Lambda-backed custom resource that writes a record to DynamoDB when its stack is created and removes it when the stack is deleted. This one genuinely hung three separate times while I was testing it, each for a different real reason I found by digging through CloudWatch Logs: a stray line of terminal text that had accidentally been pasted into the Lambda's code, a stray heredoc marker left over from a previous fix, and a Handler setting that didn't match the actual function name. Fixed all three, one at a time.
-
+The last part was Lambda-backed custom resource that writes a record to DynamoDB when its stack is created and removes it when the stack is deleted. This one genuinely hung three separate times while I was testing it, each for a different real reason I found by digging through CloudWatch Logs: a line of terminal text that was pasted into the Lambda's code by mistake, a heredoc marker left over from a previous fix, and a Handler setting that didn't match the actual function name. Fixed all three, one at a time.
 **The record that finally showed up once it worked:**
 
 <img src="evidence/phase8-cloudformation/DynamoDB.png" width="600" alt="DynamoDB row created by the custom resource">
 
 ## What I actually learned
 
-Almost nothing worked cleanly on the first try. The debugging, reading system logs, tracing exact CloudFormation error messages, testing with correctly set up IAM identities, is where the real understanding came from. More than anything that just worked immediately.
+Almost nothing worked on the first try. The debugging, reading system logs, tracing exact CloudFormation error messages, testing with correctly set up IAM identities, all helped me gain a better understanding.
 
-A policy I wrote on Day 1 was still actively enforcing itself weeks later, and it even blocked my own attempt to tear the whole project down at the end. Control Tower couldn't delete its own Config recorder because my own policy explicitly denied it, months after I'd forgotten I wrote it that way.
+A policy I wrote on Day 1 was still actively enforcing itself weeks later, and it even blocked my own attempt to tear the whole project down at the end. Control Tower couldn't delete its own Config recorder because my own policy explicitly denied it, weeks after I'd forgotten I wrote it that way.
 
-## Known limitation
+## limitation
 
 Service Catalog's cross-account launch role has a real AWS architectural constraint that I didn't fully resolve here. The launch constraint role has to exist in the same account as the portfolio, which doesn't work cleanly when a different account is doing the launching. The standard real-world fix, deploying the role into every consuming account through CloudFormation StackSets, is something I understood and documented but didn't implement in this project.
 
