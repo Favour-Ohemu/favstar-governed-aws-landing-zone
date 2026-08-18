@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  WaitHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+
+  WaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    DependsOn: TestInstance
+    Properties:
+      Handle: !Ref WaitHandle
+      Timeout: "300"
+      Count: 1
+
+  TestInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      ImageId: ami-0b826bb6d96d2afe4
+      SubnetId: !ImportValue favstar-network-day7-SubnetA
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          echo "Bootstrap script running" > /tmp/test.txt
+          /opt/aws/bin/cfn-signal -e $? "${WaitHandle}"

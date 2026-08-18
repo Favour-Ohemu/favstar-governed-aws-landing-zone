@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Favstar Network Stack - VPC with region-aware CIDR mapping and S3 endpoint
+
+Parameters:
+  EnvironmentType:
+    Type: String
+    AllowedValues: [dev, prod, sandbox]
+    Default: dev
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      CidrBlock: 10.2.0.0/16
+      SubnetA: 10.2.1.0/24
+      SubnetB: 10.2.2.0/24
+    us-west-2:
+      CidrBlock: 10.3.0.0/16
+      SubnetA: 10.3.1.0/24
+      SubnetB: 10.3.2.0/24
+
+Resources:
+  FavstarVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !FindInMap [RegionMap, !Ref "AWS::Region", CidrBlock]
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-vpc"
+
+  SubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref FavstarVPC
+      CidrBlock: !FindInMap [RegionMap, !Ref "AWS::Region", SubnetA]
+      AvailabilityZone: !Select [0, !GetAZs ""]
+
+  SubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref FavstarVPC
+      CidrBlock: !FindInMap [RegionMap, !Ref "AWS::Region", SubnetB]
+      AvailabilityZone: !Select [1, !GetAZs ""]
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref FavstarVPC
+
+  SubnetARouteAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SubnetA
+      RouteTableId: !Ref RouteTable
+
+  S3Endpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId: !Ref FavstarVPC
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+      RouteTableIds:
+        - !Ref RouteTable
+      VpcEndpointType: Gateway
+
+Outputs:
+  VpcId:
+    Value: !Ref FavstarVPC
+    Export:
+      Name: !Sub "${AWS::StackName}-VPCID"
+  SubnetAId:
+    Value: !Ref SubnetA
+    Export:
+      Name: !Sub "${AWS::StackName}-SubnetA"
+  SubnetBId:
+    Value: !Ref SubnetB
+    Export:
+      Name: !Sub "${AWS::StackName}-SubnetB"

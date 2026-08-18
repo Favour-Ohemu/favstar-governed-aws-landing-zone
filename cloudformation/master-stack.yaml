@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Favstar Master Orchestrator - deploys network and security baseline together
+
+Parameters:
+  EnvironmentType:
+    Type: String
+    AllowedValues: [dev, prod, sandbox]
+
+Resources:
+  NetworkStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://favstar-cfn-templates-devacct-<DEV_ACCOUNT_ID>.s3.amazonaws.com/network-stack.yaml
+      Parameters:
+        EnvironmentType: !Ref EnvironmentType
+
+  SecurityBaselineStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: NetworkStack
+    Properties:
+      TemplateURL: https://favstar-cfn-templates-devacct-<DEV_ACCOUNT_ID>.s3.amazonaws.com/security-baseline-stack.yaml
+      Parameters:
+        EnvironmentType: !Ref EnvironmentType

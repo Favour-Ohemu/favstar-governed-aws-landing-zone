@@ -1,0 +1,75 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Shared VPC with 2 private subnets for RAM sharing demo
+
+Resources:
+
+  SharedVPC:
+
+    Type: AWS::EC2::VPC
+
+    Properties:
+
+      CidrBlock: 10.0.0.0/16
+
+      EnableDnsSupport: true
+
+      EnableDnsHostnames: true
+
+      Tags:
+
+        - Key: Name
+
+          Value: favstar-shared-vpc
+
+  SubnetA:
+
+    Type: AWS::EC2::Subnet
+
+    Properties:
+
+      VpcId: !Ref SharedVPC
+
+      CidrBlock: 10.0.1.0/24
+
+      AvailabilityZone: !Select [0, !GetAZs ""]
+
+      Tags:
+
+        - Key: Name
+
+          Value: favstar-shared-subnet-a
+
+  SubnetB:
+
+    Type: AWS::EC2::Subnet
+
+    Properties:
+
+      VpcId: !Ref SharedVPC
+
+      CidrBlock: 10.0.2.0/24
+
+      AvailabilityZone: !Select [1, !GetAZs ""]
+
+      Tags:
+
+        - Key: Name
+
+          Value: favstar-shared-subnet-b
+
+Outputs:
+
+  VpcId:
+
+    Value: !Ref SharedVPC
+
+  SubnetAId:
+
+    Value: !Ref SubnetA
+
+  SubnetBId:
+
+    Value: !Ref SubnetB
+

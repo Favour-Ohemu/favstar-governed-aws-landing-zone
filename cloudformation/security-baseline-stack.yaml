@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Favstar Security Baseline - compliance bucket + conditional Prod security group + account inventory
+
+Parameters:
+  EnvironmentType:
+    Type: String
+    AllowedValues: [dev, prod, sandbox]
+
+Conditions:
+  IsProd: !Equals [!Ref EnvironmentType, "prod"]
+
+Resources:
+  ComplianceLogBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "favstar-logs-${EnvironmentType}-${AWS::AccountId}"
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Purpose
+          Value: ChangeSetTest
+
+  AccountInventoryEntry:
+    Type: Custom::AccountInventory
+    Properties:
+      ServiceToken: arn:aws:lambda:us-east-1:<DEV_ACCOUNT_ID>:function:favstar-account-inventory-cr
+      AccountId: !Ref "AWS::AccountId"
+      EnvironmentType: !Ref EnvironmentType
+
+Outputs:
+  BucketName:
+    Value: !Ref ComplianceLogBucket

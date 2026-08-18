@@ -1,0 +1,9 @@
+{
+    "OrganizationConformancePackStatuses": [
+        {
+            "OrganizationConformancePackName": "pci-dss-baseline",
+            "Status": "CREATE_SUCCESSFUL",
+            "LastUpdateTime": "2026-07-16T00:10:54.378000-05:00"
+        }
+    ]
+}

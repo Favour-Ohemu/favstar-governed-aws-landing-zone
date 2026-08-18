@@ -1,0 +1,9 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Deny",
+    "Action": ["ec2:TerminateInstances", "s3:DeleteBucket", "s3:DeleteObject"],
+    "Resource": "*",
+    "Condition": {"BoolIfExists": {"aws:MultiFactorAuthPresent": "false"}}
+  }]
+}

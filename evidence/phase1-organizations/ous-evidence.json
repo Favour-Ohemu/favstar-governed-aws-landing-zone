@@ -1,0 +1,24 @@
+{
+    "OrganizationalUnits": [
+        {
+            "Id": "ou-r9bj-fazqi9w9",
+            "Arn": "arn:aws:organizations::<MANAGEMENT_ACCOUNT_ID>:ou/<ORG_ID>/ou-r9bj-fazqi9w9",
+            "Name": "Sandbox"
+        },
+        {
+            "Id": "ou-r9bj-g8hz17yi",
+            "Arn": "arn:aws:organizations::<MANAGEMENT_ACCOUNT_ID>:ou/<ORG_ID>/ou-r9bj-g8hz17yi",
+            "Name": "Workloads"
+        },
+        {
+            "Id": "ou-r9bj-ix98l4m5",
+            "Arn": "arn:aws:organizations::<MANAGEMENT_ACCOUNT_ID>:ou/<ORG_ID>/ou-r9bj-ix98l4m5",
+            "Name": "Security"
+        },
+        {
+            "Id": "ou-r9bj-kpihvjz2",
+            "Arn": "arn:aws:organizations::<MANAGEMENT_ACCOUNT_ID>:ou/<ORG_ID>/ou-r9bj-kpihvjz2",
+            "Name": "Infrastructure"
+        }
+    ]
+}

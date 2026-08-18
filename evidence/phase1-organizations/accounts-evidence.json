@@ -1,0 +1,54 @@
+{
+    "Accounts": [
+        {
+            "Id": "<AUDIT_ACCOUNT_ID>",
+            "Arn": "arn:aws:organizations::<MANAGEMENT_ACCOUNT_ID>:account/<ORG_ID>/<AUDIT_ACCOUNT_ID>",
+            "Email": "<REDACTED_EMAIL>",
+            "Name": "audit",
+            "Status": "ACTIVE",
+            "State": "ACTIVE",
+            "JoinedMethod": "CREATED",
+            "JoinedTimestamp": "2026-07-13T14:06:49.993000-05:00"
+        },
+        {
+            "Id": "<SHARED_SERVICES_ACCOUNT_ID>",
+            "Arn": "arn:aws:organizations::<MANAGEMENT_ACCOUNT_ID>:account/<ORG_ID>/<SHARED_SERVICES_ACCOUNT_ID>",
+            "Email": "<REDACTED_EMAIL>",
+            "Name": "shared_services",
+            "Status": "ACTIVE",
+            "State": "ACTIVE",
+            "JoinedMethod": "CREATED",
+            "JoinedTimestamp": "2026-07-13T14:07:57.761000-05:00"
+        },
+        {
+            "Id": "<LOG_ARCHIVE_ACCOUNT_ID>",
+            "Arn": "arn:aws:organizations::<MANAGEMENT_ACCOUNT_ID>:account/<ORG_ID>/<LOG_ARCHIVE_ACCOUNT_ID>",
+            "Email": "<REDACTED_EMAIL>",
+            "Name": "log_archive",
+            "Status": "ACTIVE",
+            "State": "ACTIVE",
+            "JoinedMethod": "CREATED",
+            "JoinedTimestamp": "2026-07-13T14:04:48.126000-05:00"
+        },
+        {
+            "Id": "<DEV_ACCOUNT_ID>",
+            "Arn": "arn:aws:organizations::<MANAGEMENT_ACCOUNT_ID>:account/<ORG_ID>/<DEV_ACCOUNT_ID>",
+            "Email": "<REDACTED_EMAIL>",
+            "Name": "dev",
+            "Status": "ACTIVE",
+            "State": "ACTIVE",
+            "JoinedMethod": "CREATED",
+            "JoinedTimestamp": "2026-07-13T14:09:12.578000-05:00"
+        },
+        {
+            "Id": "<MANAGEMENT_ACCOUNT_ID>",
+            "Arn": "arn:aws:organizations::<MANAGEMENT_ACCOUNT_ID>:account/<ORG_ID>/<MANAGEMENT_ACCOUNT_ID>",
+            "Email": "<REDACTED_EMAIL>",
+            "Name": "Favour Ohemu",
+            "Status": "ACTIVE",
+            "State": "ACTIVE",
+            "JoinedMethod": "INVITED",
+            "JoinedTimestamp": "2026-07-09T23:59:41.987000-05:00"
+        }
+    ]
+}
