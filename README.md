@@ -62,7 +62,7 @@ I created the org, 4 OUs, 6 accounts, and 5 SCPs. Then I actually tested them fr
 | Cross-region action (eu-west-1) | Blocked |
 | Delete S3 object without MFA | Denied, then allowed once I authenticated with MFA |
 
-**OU tree, before all accounts were created:**
+**OU tree:**
 
 <img src="evidence/phase1-organizations/OU tree (1).png" width="600" alt="OU tree, early version">
 
