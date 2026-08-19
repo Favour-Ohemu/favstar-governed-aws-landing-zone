@@ -77,7 +77,7 @@ I also hit an AWS account quota limit that blocked Prod and Sandbox from being c
 
 <img src="evidence/phase1-organizations/Service quota limit.png" width="600" alt="Service quota limit notice">
 
-Then I moved on to Control Tower. I discovered it applies its own mandatory controls automatically when an OU is registered, on top of whatever elective controls you must have picked. Comparing the two side by side was actually interesting: my SCPs govern what workload accounts are allowed to do. Control Tower's controls protect its own infrastructure from being tampered with, even by an account admin.
+Then I moved on to Control Tower. I discovered it applies its own mandatory controls automatically when an OU is registered, on top of whatever elective controls you must have picked. Comparing the two side by side I saw that: my SCPs govern what the workload accounts is allowed to do. Control Tower's controls protect its own infrastructure from being tampered with, even by an account admin.
 
 **Control Tower's controls list, showing the mix of mandatory and elective:**
 
